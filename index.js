@@ -27,7 +27,7 @@ app.post('/api/updateCaboTranslateTokens', async (req, res) => {
     if(!req.body)
       return res.status(400).json({response: {error: 'Missing/Incorrect Parameters'}})
 
-    await updateCaboTranslateTokensSQL(JSON.parse(req.body))
+    await updateCaboTranslateTokensSQL(req.body)
     return res.status(200).json({response: 'Tokens Updated.'})
   } catch (error) {
     return res.status(400).json({response: {error: 'Error Updating Cabo Translate Tokens: '+error.stack}})
