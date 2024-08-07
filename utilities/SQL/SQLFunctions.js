@@ -28,7 +28,7 @@ export async function getUserFavoritesSQL(userId) {
     WHERE userid = '${userId}'
   `
 
-  return userFavorites.rowCount > 0 ? userFavorites.rows : []
+  return userFavorites.rowCount > 0 ? {userFavorites: userFavorites.rows} : {userFavorites: []}
 }
 
 export async function addFavoriteSQL(_favoriteInfo) {
