@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres'
-import { CaboTranslateTokens, FavoriteInfo } from './SQLClasses'
+import { CaboTranslateTokens, FavoriteInfo } from './SQLClasses.js'
 
 export async function getCaboTranslateTokensSQL() {
   const tokens = await sql`
