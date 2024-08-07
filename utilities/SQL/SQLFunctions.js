@@ -1,4 +1,34 @@
-import mysql from 'mysql2'
+import { sql } from '@vercel/postgres'
+
+export async function getCaboTranslateTokensSQL() {
+  const tokens = await sql`
+    SELECT * 
+    FROM caboapitokens 
+    WHERE apitype = 'translate'
+  `
+
+  return tokens.rowCount > 0 ? tokens.rows[0] : {}
+}
+
+export async function updateCaboTranslateTokensSQL(caboTranslateTokens) {
+  await sql`
+    UPDATE caboapitokens 
+    SET accesstoken = '${caboTranslateTokens.accessToken}', refreshtoken = '${caboTranslateTokens.refreshToken}' 
+    WHERE apitype = 'translate'
+  `
+}
+
+export async function getUserFavoritesSQL(userId) {
+  const { userFavorites } = await sql`
+    SELECT *
+    FROM userFavorites
+    WHERE userId = ${userId}
+  `
+
+  console.log(userFavorites)
+}
+
+/*import mysql from 'mysql2'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -27,3 +57,13 @@ export async function updateCaboTranslateTokensSQL(caboTranslateTokens) {
     WHERE apiType = 'translate'  
   `, [caboTranslateTokens.accessToken, caboTranslateTokens.refreshToken])
 }
+
+export async function getUserFavoritesSQL(userId) {
+  const [userFavorites] = await pool.query(`
+    SELECT * 
+    FROM userFavorites
+    WHERE userId = ?
+  `, [userId])
+
+  return {userFavorites: userFavorites}
+}*/

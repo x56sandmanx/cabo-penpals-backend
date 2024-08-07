@@ -1,7 +1,9 @@
 import express from 'express'
+import dotenv from 'dotenv'
 
-import { getCaboTranslateTokensSQL, updateCaboTranslateTokensSQL } from './utilities/SQL/SQLFunctions.js'
+import { getCaboTranslateTokensSQL, getUserFavoritesSQL, updateCaboTranslateTokensSQL } from './utilities/SQL/SQLFunctions.js'
 
+dotenv.config()
 const app = express()
 app.use(express.json())
 
@@ -31,6 +33,18 @@ app.post('/api/updateCaboTranslateTokens', async (req, res) => {
     return res.status(200).json({response: 'Tokens Updated.'})
   } catch (error) {
     return res.status(400).json({response: {error: 'Error Updating Cabo Translate Tokens: '+error.stack}})
+  }
+})
+
+app.get('/api/getUserFavorites', async (req, res) => {
+  try {
+    if(!req.query.userId)
+      return res.status(400).json({response: {error: 'Missing/Incorrect Parameters'}})
+
+    const userFavoritesResponse = await getUserFavoritesSQL(req.query.userId)
+    return res.status(200).json({response: userFavoritesResponse})
+  } catch (error) {
+    return res.status(400).json({response: {error: 'Error Getting User Favorites: '+error.stack}})
   }
 })
 
