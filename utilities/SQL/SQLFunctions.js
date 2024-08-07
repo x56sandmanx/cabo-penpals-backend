@@ -5,7 +5,7 @@ export async function getCaboTranslateTokensSQL() {
   const tokens = await sql`
     SELECT * 
     FROM caboapitokens 
-    WHERE apitype = 'translate'
+    WHERE apitype = translate
   `
 
   return tokens.rowCount > 0 ? tokens.rows[0] : {}
@@ -16,8 +16,8 @@ export async function updateCaboTranslateTokensSQL(_caboTranslateTokens) {
 
   await sql`
     UPDATE caboapitokens 
-    SET accesstoken = '${caboTranslateTokens.accessToken}', refreshtoken = '${caboTranslateTokens.refreshToken}' 
-    WHERE apitype = 'translate'
+    SET accesstoken = ${caboTranslateTokens.accessToken}, refreshtoken = ${caboTranslateTokens.refreshToken}
+    WHERE apitype = translate
   `
 }
 
@@ -36,7 +36,7 @@ export async function addFavoriteSQL(_favoriteInfo) {
 
   await sql`
     INSERT INTO userfavorites
-    VALUES ('${favoriteInfo.userId}', '${favoriteInfo.characterId}')
+    VALUES (${favoriteInfo.userId}, ${favoriteInfo.characterId})
   `
 }
 
@@ -46,7 +46,7 @@ export async function removeFavoriteSQL(_favoriteInfo) {
   await sql`
     DELETE
     FROM userfavorites
-    WHERE userid = '${favoriteInfo.userId}' AND characterid = '${favoriteInfo.characterId}'
+    WHERE userid = ${favoriteInfo.userId} AND characterid = ${favoriteInfo.characterId}
   `
 }
 
