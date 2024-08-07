@@ -5,7 +5,7 @@ export async function getCaboTranslateTokensSQL() {
   const tokens = await sql`
     SELECT * 
     FROM caboapitokens 
-    WHERE apitype = translate
+    WHERE apitype = 'translate'
   `
 
   return tokens.rowCount > 0 ? tokens.rows[0] : {}
@@ -17,7 +17,7 @@ export async function updateCaboTranslateTokensSQL(_caboTranslateTokens) {
   await sql`
     UPDATE caboapitokens 
     SET accesstoken = ${caboTranslateTokens.accessToken}, refreshtoken = ${caboTranslateTokens.refreshToken}
-    WHERE apitype = translate
+    WHERE apitype = 'translate'
   `
 }
 
