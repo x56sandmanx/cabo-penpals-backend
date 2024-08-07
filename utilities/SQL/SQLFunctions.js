@@ -25,7 +25,7 @@ export async function getUserFavoritesSQL(userId) {
   const userFavorites = await sql`
     SELECT *
     FROM userfavorites
-    WHERE userid = '${userId}'
+    WHERE userid = ${userId}
   `
 
   return userFavorites.rowCount > 0 ? {userFavorites: userFavorites.rows} : {userFavorites: []}
