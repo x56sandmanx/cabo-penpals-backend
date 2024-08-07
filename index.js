@@ -1,7 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 
-import { getCaboTranslateTokensSQL, getUserFavoritesSQL, updateCaboTranslateTokensSQL } from './utilities/SQL/SQLFunctions.js'
+import { addFavoriteSQL, getCaboTranslateTokensSQL, getUserFavoritesSQL, removeFavoriteSQL, updateCaboTranslateTokensSQL } from './utilities/SQL/SQLFunctions.js'
 
 dotenv.config()
 const app = express()
@@ -45,6 +45,30 @@ app.get('/api/getUserFavorites', async (req, res) => {
     return res.status(200).json({response: userFavoritesResponse})
   } catch (error) {
     return res.status(400).json({response: {error: 'Error Getting User Favorites: '+error.stack}})
+  }
+})
+
+app.post('/api/addFavorite', async (req, res) => {
+  try {
+    if(!req.body)
+      return res.status(400).json({response: {error: 'Missing/Incorrect Parameters'}})
+
+    await addFavoriteSQL(req.body)
+    return res.status(200).json({response: 'Favorite Added.'})
+  } catch (error) {
+    return res.status(400).json({response: {error: 'Error Adding Favorite: '+error.stack}})
+  }
+})
+
+app.delete('/api/removeFavorite', async (req, res) => {
+  try {
+    if(!req.body)
+      return res.status(400).json({response: {error: 'Missing/Incorrect Parameters'}})
+
+    await removeFavoriteSQL(req.body)
+    return res.status(200).json({response: 'Favorite Removed.'})
+  } catch (error) {
+    return res.status(400).json({response: {error: 'Error Removing Favorite: '+error.stack}})
   }
 })
 

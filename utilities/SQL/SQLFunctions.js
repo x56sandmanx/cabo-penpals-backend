@@ -1,4 +1,5 @@
 import { sql } from '@vercel/postgres'
+import { CaboTranslateTokens, FavoriteInfo } from './SQLClasses'
 
 export async function getCaboTranslateTokensSQL() {
   const tokens = await sql`
@@ -10,7 +11,9 @@ export async function getCaboTranslateTokensSQL() {
   return tokens.rowCount > 0 ? tokens.rows[0] : {}
 }
 
-export async function updateCaboTranslateTokensSQL(caboTranslateTokens) {
+export async function updateCaboTranslateTokensSQL(_caboTranslateTokens) {
+  const caboTranslateTokens = new CaboTranslateTokens(_caboTranslateTokens)
+
   await sql`
     UPDATE caboapitokens 
     SET accesstoken = '${caboTranslateTokens.accessToken}', refreshtoken = '${caboTranslateTokens.refreshToken}' 
@@ -19,13 +22,32 @@ export async function updateCaboTranslateTokensSQL(caboTranslateTokens) {
 }
 
 export async function getUserFavoritesSQL(userId) {
-  const { userFavorites } = await sql`
+  const userFavorites = await sql`
     SELECT *
-    FROM userFavorites
-    WHERE userId = ${userId}
+    FROM userfavorites
+    WHERE userid = '${userId}'
   `
 
-  console.log(userFavorites)
+  return userFavorites.rowCount > 0 ? userFavorites.rows : []
+}
+
+export async function addFavoriteSQL(_favoriteInfo) {
+  const favoriteInfo = new FavoriteInfo(_favoriteInfo)
+
+  await sql`
+    INSERT INTO userfavorites
+    VALUES ('${favoriteInfo.userId}', '${favoriteInfo.characterId}')
+  `
+}
+
+export async function removeFavoriteSQL(_favoriteInfo) {
+  const favoriteInfo = new FavoriteInfo(_favoriteInfo)
+  
+  await sql`
+    DELETE
+    FROM userfavorites
+    WHERE userid = '${favoriteInfo.userId}' AND characterid = '${favoriteInfo.characterId}'
+  `
 }
 
 /*import mysql from 'mysql2'
