@@ -35,7 +35,7 @@ export async function updateCaboTranslateTokensSQL(_caboTranslateTokens) {
 
 export async function getUserFavoritesSQL(userId) {
   const [userFavorites] = await pool.query(`
-    SLEECT *
+    SELECT *
     FROM userFavorites
     WHERE userId = ?  
   `, [userId])
