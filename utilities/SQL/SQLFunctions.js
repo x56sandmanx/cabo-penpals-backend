@@ -1,6 +1,9 @@
 import sql from 'mysql2'
+import dotenv from 'dotenv'
 import { CaboTranslateTokens, FavoriteInfo } from './SQLClasses.js'
 import { randomUUID } from 'crypto'
+
+dotenv.config()
 
 const pool = sql.createPool({
   host: process.env.DB_HOST,
