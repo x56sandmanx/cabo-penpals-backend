@@ -1,60 +1,8 @@
-import { sql } from '@vercel/postgres'
+import sql from 'mysql2'
 import { CaboTranslateTokens, FavoriteInfo } from './SQLClasses.js'
+import { randomUUID } from 'crypto'
 
-export async function getCaboTranslateTokensSQL() {
-  const tokens = await sql`
-    SELECT * 
-    FROM caboapitokens 
-    WHERE apitype = 'translate'
-  `
-
-  return tokens.rowCount > 0 ? tokens.rows[0] : {}
-}
-
-export async function updateCaboTranslateTokensSQL(_caboTranslateTokens) {
-  const caboTranslateTokens = new CaboTranslateTokens(_caboTranslateTokens)
-
-  await sql`
-    UPDATE caboapitokens 
-    SET accesstoken = ${caboTranslateTokens.accessToken}, refreshtoken = ${caboTranslateTokens.refreshToken}
-    WHERE apitype = 'translate'
-  `
-}
-
-export async function getUserFavoritesSQL(userId) {
-  const userFavorites = await sql`
-    SELECT *
-    FROM userfavorites
-    WHERE userid = ${userId}
-  `
-
-  return userFavorites.rowCount > 0 ? {userFavorites: userFavorites.rows} : {userFavorites: []}
-}
-
-export async function addFavoriteSQL(_favoriteInfo) {
-  const favoriteInfo = new FavoriteInfo(_favoriteInfo)
-
-  await sql`
-    INSERT INTO userfavorites
-    VALUES (${favoriteInfo.userId}, ${favoriteInfo.characterId})
-  `
-}
-
-export async function removeFavoriteSQL(_favoriteInfo) {
-  const favoriteInfo = new FavoriteInfo(_favoriteInfo)
-  
-  await sql`
-    DELETE
-    FROM userfavorites
-    WHERE userid = ${favoriteInfo.userId} AND characterid = ${favoriteInfo.characterId}
-  `
-}
-
-/*import mysql from 'mysql2'
-import dotenv from 'dotenv'
-
-dotenv.config()
-let pool = mysql.createPool({
+const pool = sql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -72,7 +20,9 @@ export async function getCaboTranslateTokensSQL() {
   return tokens[0]
 }
 
-export async function updateCaboTranslateTokensSQL(caboTranslateTokens) {
+export async function updateCaboTranslateTokensSQL(_caboTranslateTokens) {
+  const caboTranslateTokens = new CaboTranslateTokens(_caboTranslateTokens)
+
   await pool.query(`
     UPDATE caboAPITokens
     SET accessToken = ?, refreshToken = ?
@@ -82,10 +32,29 @@ export async function updateCaboTranslateTokensSQL(caboTranslateTokens) {
 
 export async function getUserFavoritesSQL(userId) {
   const [userFavorites] = await pool.query(`
-    SELECT * 
+    SLEECT *
     FROM userFavorites
-    WHERE userId = ?
+    WHERE userId = ?  
   `, [userId])
 
   return {userFavorites: userFavorites}
-}*/
+}
+
+export async function addFavoriteSQL(_favoriteInfo) {
+  const favoriteInfo = new FavoriteInfo(_favoriteInfo)
+
+  await pool.query(`
+    INSERT INTO userFavorites
+    VALUES (?, ?, ?)  
+  `, [randomUUID(), favoriteInfo.characterId, favoriteInfo.userId])
+}
+
+export async function removeFavoriteSQL(_favoriteInfo) {
+  const favoriteInfo = new FavoriteInfo(_favoriteInfo)
+
+  await pool.query(`
+    DELETE
+    FROM userFavorites
+    WHERE userId = ? AND characterId = ?  
+  `, [favoriteInfo.userId, favoriteInfo.characterId])
+}
