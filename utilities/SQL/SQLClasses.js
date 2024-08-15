@@ -3,8 +3,8 @@ export class CaboTranslateTokens {
   refreshToken
 
   constructor(caboTranslateTokensData = {}) {
-    this.accessToken = caboTranslateTokensData.accesstoken ? String(caboTranslateTokensData.accesstoken) : ''
-    this.refreshToken = caboTranslateTokensData.refreshtoken ? String(caboTranslateTokensData.refreshtoken) : ''
+    this.accessToken = caboTranslateTokensData.accessToken ? String(caboTranslateTokensData.accessToken) : ''
+    this.refreshToken = caboTranslateTokensData.refreshToken ? String(caboTranslateTokensData.refreshToken) : ''
   }
 }
 
